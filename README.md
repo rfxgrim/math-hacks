@@ -1,4 +1,4 @@
-# unblocked-games
+# math-hacks
 this respritory is for launching unblocked games
 
 game assets:
