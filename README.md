@@ -23,3 +23,5 @@ if there's a problem with a game, please don't use the requests form to tell us.
 
 
 from ultimateunblocked im lazy
+
+credits: https://github.com/ultimateunblocked1/ultimateunblocked1.github.io
