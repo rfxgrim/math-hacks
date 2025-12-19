@@ -178,7 +178,7 @@ input {
 #games .action,
 #apps .action,
 #settings .action,
-#porxy .action {
+#proxy .action {
   margin-bottom: 12px; /* spacing between buttons */
   padding: 16px; /* taller buttons */
 }
