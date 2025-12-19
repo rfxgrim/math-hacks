@@ -139,29 +139,29 @@ input {
 }
 
 /* -----------------------------
-   Spinning border around proxy input
+   Working spinning border around proxy input
 ------------------------------ */
 .input-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 16px; /* extra space below input */
+  margin-bottom: 16px; /* space between input and button */
   border-radius: 14px;
   padding: 2px; /* thickness of spinning border */
-  background: conic-gradient(rgba(59,130,246,0.3), rgba(59,130,246,0.3) 25%, transparent 50%, transparent 100%);
+  background: conic-gradient(rgba(59,130,246,0.4), transparent 50%, rgba(59,130,246,0.4));
   animation: spin-border 2s linear infinite;
 }
 
 #urlInput {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  outline: none;
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  outline:none;
   background: var(--card);
   color: var(--text);
-  font-size: 15px;
-  position: relative;
-  z-index: 1; /* above spinning border */
+  font-size:15px;
+  position:relative;
+  z-index:1; /* above spinning border */
 }
 
 @keyframes spin-border {
@@ -176,6 +176,6 @@ input {
 #games .action,
 #apps .action,
 #settings .action {
-  margin-bottom: 12px; /* spacing between buttons */
-  padding: 16px; /* taller buttons for better spacing */
+  margin-bottom: 12px;
+  padding:16px;
 }
