@@ -138,7 +138,44 @@ input {
   margin-bottom:12px;
 }
 
-/* Dim spinning border using hotbar accent color */
+/* -----------------------------
+   Dim spinning border around input
+------------------------------ */
 .input-wrapper {
   position: relative;
-  width
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.input-wrapper::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 16px; /* slightly bigger than input */
+  background: conic-gradient(rgba(59,130,246,0.3) 0deg, transparent 60deg, transparent 360deg);
+  animation: spin-border 2s linear infinite;
+  z-index: 1; /* behind input but visible around edges */
+  pointer-events: none;
+}
+
+#urlInput {
+  position: relative;
+  z-index: 2; /* above spinning border */
+}
+
+@keyframes spin-border {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* -----------------------------
+   Space between buttons in Games & Apps
+------------------------------ */
+#games .action,
+#apps .action {
+  margin-bottom: 12px; /* spacing between buttons */
+  padding: 16px; /* optional: taller buttons */
+}
