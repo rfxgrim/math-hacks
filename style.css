@@ -135,7 +135,7 @@ input {
   outline:none;
   background:var(--card);
   color:var(--text);
-  margin-bottom:12px;
+  font-size:15px;
 }
 
 /* -----------------------------
@@ -150,32 +150,34 @@ input {
 .input-wrapper::before {
   content: "";
   position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  border-radius: 16px; /* slightly bigger than input */
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: 18px; /* slightly bigger than input */
   background: conic-gradient(rgba(59,130,246,0.3) 0deg, transparent 60deg, transparent 360deg);
   animation: spin-border 2s linear infinite;
-  z-index: 1; /* behind input but visible around edges */
+  z-index: 0; /* behind input */
   pointer-events: none;
 }
 
 #urlInput {
   position: relative;
-  z-index: 2; /* above spinning border */
+  z-index: 1; /* above spinning border */
 }
 
+/* Spin animation */
 @keyframes spin-border {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
 /* -----------------------------
-   Space between buttons in Games & Apps
+   Space between buttons in Games, Apps, and Settings
 ------------------------------ */
 #games .action,
-#apps .action {
+#apps .action,
+#settings .action {
   margin-bottom: 12px; /* spacing between buttons */
-  padding: 16px; /* optional: taller buttons */
+  padding: 16px; /* taller buttons */
 }
