@@ -133,40 +133,37 @@ input {
   border-radius:12px;
   border:none;
   outline:none;
-  background:var(--card);
-  color:var(--text);
+  background: var(--card);
+  color: var(--text);
   font-size:15px;
 }
 
 /* -----------------------------
-   Dim spinning border around input
+   Spinning border around proxy input
 ------------------------------ */
 .input-wrapper {
   position: relative;
   width: 100%;
   margin-bottom: 12px;
-}
-
-.input-wrapper::before {
-  content: "";
-  position: absolute;
-  top: -6px;
-  left: -6px;
-  right: -6px;
-  bottom: -6px;
-  border-radius: 18px; /* slightly bigger than input */
-  background: conic-gradient(rgba(59,130,246,0.3) 0deg, transparent 60deg, transparent 360deg);
+  border-radius: 14px;
+  padding: 2px; /* thickness of spinning border */
+  background: conic-gradient(rgba(59,130,246,0.3), rgba(59,130,246,0.3) 25%, transparent 50%, transparent 100%);
   animation: spin-border 2s linear infinite;
-  z-index: 0; /* behind input */
-  pointer-events: none;
 }
 
 #urlInput {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  background: var(--card);
+  color: var(--text);
+  font-size: 15px;
   position: relative;
   z-index: 1; /* above spinning border */
 }
 
-/* Spin animation */
 @keyframes spin-border {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -177,8 +174,7 @@ input {
 ------------------------------ */
 #games .action,
 #apps .action,
-#settings .action,
-#proxy .action {
+#settings .action {
   margin-bottom: 12px; /* spacing between buttons */
-  padding: 16px; /* taller buttons */
+  padding: 16px; /* slightly taller buttons */
 }
