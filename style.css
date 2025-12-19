@@ -144,7 +144,7 @@ input {
 .input-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 16px; /* extra space below input */
   border-radius: 14px;
   padding: 2px; /* thickness of spinning border */
   background: conic-gradient(rgba(59,130,246,0.3), rgba(59,130,246,0.3) 25%, transparent 50%, transparent 100%);
@@ -170,11 +170,12 @@ input {
 }
 
 /* -----------------------------
-   Space between buttons in Games, Apps, and Settings
+   Space between buttons in all sections
 ------------------------------ */
+#proxy .action,
 #games .action,
 #apps .action,
 #settings .action {
   margin-bottom: 12px; /* spacing between buttons */
-  padding: 16px; /* slightly taller buttons */
+  padding: 16px; /* taller buttons for better spacing */
 }
