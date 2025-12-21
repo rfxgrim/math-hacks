@@ -96,11 +96,11 @@ body {
   text-align:center;
 }
 
-/* TAB LOAD ANIMATION */
+/* SITE + TAB LOAD ANIMATION */
 .section {
   display:none;
   opacity:0;
-  transform:translateY(12px);
+  transform:translateY(14px);
 }
 
 .section.active {
@@ -108,10 +108,10 @@ body {
 }
 
 .section.animate {
-  animation:tabLoad .45s ease forwards;
+  animation:siteLoad .55s cubic-bezier(.2,.8,.2,1) forwards;
 }
 
-@keyframes tabLoad {
+@keyframes siteLoad {
   to {
     opacity:1;
     transform:translateY(0);
@@ -147,7 +147,7 @@ input {
   color:var(--text);
 }
 
-/* SPINNING BORDER */
+/* SPINNING BORDER (LINE ONLY) */
 @property --angle {
   syntax:"<angle>";
   initial-value:0deg;

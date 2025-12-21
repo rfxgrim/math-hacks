@@ -71,16 +71,22 @@ function updateIndicator(btn) {
   indicator.style.width = r.width + "px";
 }
 
-window.onload = () => updateIndicator(document.querySelector(".hotbar .active"));
+window.onload = () => {
+  updateIndicator(document.querySelector(".hotbar .active"));
+};
 
+/* TAB SWITCHING WITH ANIMATION */
 function switchTab(id, btn) {
   document.querySelectorAll(".section").forEach(s => {
-    s.classList.remove("active","animate");
+    s.classList.remove("active", "animate");
   });
 
   const target = document.getElementById(id);
   target.classList.add("active");
-  requestAnimationFrame(() => target.classList.add("animate"));
+
+  // force reflow so animation restarts
+  void target.offsetWidth;
+  target.classList.add("animate");
 
   document.querySelectorAll(".hotbar button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
