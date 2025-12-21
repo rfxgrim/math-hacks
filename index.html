@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Proxy Launcher</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -24,7 +24,7 @@
 <!-- CONTENT -->
 <div class="container">
 
-  <div id="proxy" class="section active">
+  <div id="proxy" class="section active animate">
     <h1>Proxy</h1>
     <div class="bio">Enter a URL to open through your proxy</div>
 
@@ -74,8 +74,13 @@ function updateIndicator(btn) {
 window.onload = () => updateIndicator(document.querySelector(".hotbar .active"));
 
 function switchTab(id, btn) {
-  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".section").forEach(s => {
+    s.classList.remove("active","animate");
+  });
+
+  const target = document.getElementById(id);
+  target.classList.add("active");
+  requestAnimationFrame(() => target.classList.add("animate"));
 
   document.querySelectorAll(".hotbar button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
