@@ -5,7 +5,7 @@
   --text:#ffffff;
   --muted:#9aa0a6;
   --particle:rgba(255,255,255,.12);
-  --glass:rgba(20,20,26,.7);
+  --glass:rgba(20,20,26,.75);
   --blur:blur(14px);
   --accent:#3b82f6;
 }
@@ -24,28 +24,29 @@ body {
   overflow:hidden;
 }
 
-/* HOTBAR (SHORTER) */
+/* HOTBAR (ORIGINAL SIZE RESTORED) */
 .hotbar {
   position:fixed;
-  top:16px;
+  top:20px;
   left:50%;
   transform:translateX(-50%);
   background:var(--glass);
   backdrop-filter:var(--blur);
   border-radius:999px;
-  padding:4px;
+  padding:6px;
   display:flex;
-  gap:4px;
+  gap:6px;
   z-index:3;
 }
 
 .hotbar button {
+  position:relative;
   border:none;
   background:none;
   color:var(--muted);
-  padding:8px 14px;
+  padding:10px 18px;
   border-radius:999px;
-  font-size:13px;
+  font-size:14px;
   font-weight:600;
   cursor:pointer;
 }
@@ -55,13 +56,14 @@ body {
   color:var(--text);
 }
 
+/* SHORTER INDICATOR LINE */
 .indicator {
   position:absolute;
-  bottom:4px;
-  height:2px;
+  bottom:6px;
+  height:3px;
   background:var(--accent);
   border-radius:999px;
-  transition:.35s ease;
+  transition:.35s cubic-bezier(.4,0,.2,1);
 }
 
 /* PARTICLES */
@@ -91,12 +93,12 @@ body {
   position:relative;
   z-index:1;
   max-width:420px;
-  margin:120px auto 0;
+  margin:140px auto 0;
   padding:24px;
   text-align:center;
 }
 
-/* SITE + TAB LOAD ANIMATION */
+/* LOAD + TAB ANIMATION */
 .section {
   display:none;
   opacity:0;

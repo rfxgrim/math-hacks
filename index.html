@@ -60,22 +60,25 @@
 </div>
 
 <script>
-/* HOTBAR INDICATOR */
+/* HOTBAR INDICATOR (SHORTER LINE) */
 const indicator = document.getElementById("indicator");
 const hotbar = document.getElementById("hotbar");
 
 function updateIndicator(btn) {
   const r = btn.getBoundingClientRect();
   const p = hotbar.getBoundingClientRect();
-  indicator.style.left = (r.left - p.left) + "px";
-  indicator.style.width = r.width + "px";
+
+  const lineWidth = r.width * 0.55; // SHORTER LINE
+  indicator.style.width = lineWidth + "px";
+  indicator.style.left =
+    (r.left - p.left) + (r.width - lineWidth) / 2 + "px";
 }
 
 window.onload = () => {
   updateIndicator(document.querySelector(".hotbar .active"));
 };
 
-/* TAB SWITCHING WITH ANIMATION */
+/* TAB SWITCH */
 function switchTab(id, btn) {
   document.querySelectorAll(".section").forEach(s => {
     s.classList.remove("active", "animate");
@@ -83,8 +86,6 @@ function switchTab(id, btn) {
 
   const target = document.getElementById(id);
   target.classList.add("active");
-
-  // force reflow so animation restarts
   void target.offsetWidth;
   target.classList.add("animate");
 
