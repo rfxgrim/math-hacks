@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
 <!-- HOTBAR -->
@@ -26,11 +25,10 @@
 
   <div id="proxy" class="section active animate">
     <h1>Proxy</h1>
-    <div class="bio">Enter a page on math-hacks.onrender.com</div>
+    <div class="bio">Enter a URL to open through your proxy</div>
 
     <div class="input-wrapper">
-      <input id="urlInput" placeholder="Enter a page"
-             onkeydown="if(event.key==='Enter') openProxy()">
+      <input id="urlInput" placeholder="https://example.com">
     </div>
 
     <button class="action" onclick="openProxy()">Open</button>
@@ -38,17 +36,12 @@
 
   <div id="games" class="section">
     <h1>Games</h1>
-    <div class="bio">Quick game launch</div>
-    <button class="action">Game 1</button>
-    <button class="action">Game 2</button>
+    <div class="bio">Will be added soon</div>
   </div>
 
   <div id="apps" class="section">
     <h1>Apps</h1>
-    <div class="bio">App shortcuts</div>
-    <button class="action">YouTube</button>
-    <button class="action">Discord</button>
-    <button class="action">Reddit</button>
+    <div class="bio">Will be added soon</div>
   </div>
 
   <div id="settings" class="section">
@@ -96,35 +89,13 @@ function switchTab(id, btn) {
   updateIndicator(btn);
 }
 
-/* PROXY: Only exact domain math-hacks.onrender.com */
+/* PROXY */
 function openProxy() {
   const input = document.getElementById("urlInput").value.trim();
   if (!input) return;
-
-  const siteDomain = "math-hacks.onrender.com";
-  let target = input;
-
-  // Convert relative paths to absolute URLs
-  if (!input.startsWith("http://") && !input.startsWith("https://")) {
-    target = "https://" + siteDomain + "/" + input.replace(/^\/+/, "");
-  }
-
-  try {
-    const url = new URL(target);
-
-    // Only allow exact domain
-    if (url.hostname !== siteDomain) {
-      alert("You can only open pages from math-hacks.onrender.com (no subdomains).");
-      return;
-    }
-
-    // Rammerhead deployment mounted locally
-    const proxyBase = "/proxy/";
-    window.location.href = proxyBase + "#" + encodeURIComponent(url.href);
-
-  } catch (e) {
-    alert("Invalid URL.");
-  }
+  const proxyBase = "/proxy/"; // Your proxy endpoint
+  const target = input.startsWith("http") ? input : "https://" + input;
+  window.open(proxyBase + "#" + encodeURIComponent(target), "_blank");
 }
 
 /* PARTICLES */
