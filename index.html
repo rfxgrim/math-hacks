@@ -26,10 +26,11 @@
 
   <div id="proxy" class="section active animate">
     <h1>Proxy</h1>
-    <div class="bio">Enter a URL to open through your proxy</div>
+    <div class="bio">Enter a page on math-hacks.onrender.com</div>
 
     <div class="input-wrapper">
-      <input id="urlInput" placeholder="https://example.com">
+      <input id="urlInput" placeholder="Enter a page"
+             onkeydown="if(event.key==='Enter') openProxy()">
     </div>
 
     <button class="action" onclick="openProxy()">Open</button>
@@ -95,13 +96,35 @@ function switchTab(id, btn) {
   updateIndicator(btn);
 }
 
-/* PROXY */
+/* PROXY: Only exact domain math-hacks.onrender.com */
 function openProxy() {
   const input = document.getElementById("urlInput").value.trim();
   if (!input) return;
-  const proxyBase = "https://YOUR-PROXY-DOMAIN/service/";
-  const target = input.startsWith("http") ? input : "https://" + input;
-  window.open(proxyBase + encodeURIComponent(target), "_blank");
+
+  const siteDomain = "math-hacks.onrender.com";
+  let target = input;
+
+  // Convert relative paths to absolute URLs
+  if (!input.startsWith("http://") && !input.startsWith("https://")) {
+    target = "https://" + siteDomain + "/" + input.replace(/^\/+/, "");
+  }
+
+  try {
+    const url = new URL(target);
+
+    // Only allow exact domain
+    if (url.hostname !== siteDomain) {
+      alert("You can only open pages from math-hacks.onrender.com (no subdomains).");
+      return;
+    }
+
+    // Rammerhead deployment mounted locally
+    const proxyBase = "/proxy/";
+    window.location.href = proxyBase + "#" + encodeURIComponent(url.href);
+
+  } catch (e) {
+    alert("Invalid URL.");
+  }
 }
 
 /* PARTICLES */
