@@ -2,7 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
-import { createBareServer } from "@mercuryworkshop/bare-server-node";
+import { createBareServer } from "@tomphttp/bare-server-node";
 import { scramjetPath } from "@mercuryworkshop/scramjet/path";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
@@ -20,7 +20,9 @@ app.use("/epoxy/", express.static(epoxyPath));
 app.use(express.static(__dirname));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  if (!bareServer.shouldRoute(req)) {
+    res.sendFile(path.join(__dirname, "index.html"));
+  }
 });
 
 const server = createServer((req, res) => {

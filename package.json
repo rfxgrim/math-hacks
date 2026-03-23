@@ -10,6 +10,6 @@
     "@mercuryworkshop/scramjet": "latest",
     "@mercuryworkshop/bare-mux": "latest",
     "@mercuryworkshop/epoxy-transport": "latest",
-    "@mercuryworkshop/bare-server-node": "latest"
+    "@tomphttp/bare-server-node": "^3.0.0"
   }
 }
