@@ -56,6 +56,8 @@ const scramjet = new ScramjetController({
 });
 scramjet.init("/sw.js");
 navigator.serviceWorker.register("/sw.js", { scope: "/" });
+const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
+conn.setTransport("/epoxy/index.mjs", ["wss://math-hacks.onrender.com/bare/"]);
 
 /* HOTBAR INDICATOR */
 const indicator = document.getElementById("indicator");

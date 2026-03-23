@@ -1,27 +1,27 @@
+import express from "express";
+import { createServer } from "http";
+import path from "path";
+import { fileURLToPath } from "url";
+import { createBareServer } from "@tomphttp/bare-server-node";
 import { scramjetPath } from "@mercuryworkshop/scramjet/path";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
-import { createServer } from "http";
-import { createBareServer } from "@tomphttp/bare-server-node";
-import express from "express";
-import { fileURLToPath } from "url";
-import path from "path";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const bareServer = createBareServer("/bare/");
 
-// Serve Scramjet files under /scram/
 app.use("/scram/", express.static(scramjetPath));
-
-// Serve BareMux files under /baremux/
 app.use("/baremux/", express.static(baremuxPath));
-
-// Serve Epoxy transport under /epoxy/
 app.use("/epoxy/", express.static(epoxyPath));
 
-// Serve your public folder
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(__dirname));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
 const server = createServer((req, res) => {
   if (bareServer.shouldRoute(req)) {
@@ -39,4 +39,7 @@ server.on("upgrade", (req, socket, head) => {
   }
 });
 
-server.listen(3000, () => console.log("Running on http://localhost:3000"));
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Math-Hacks running on port ${PORT}`);
+});
