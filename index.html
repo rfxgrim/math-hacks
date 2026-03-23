@@ -1,50 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Classroom</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="/scram/scramjet.controller.js"></script>
-  <script src="/baremux/index.js"></script>
-</head>
-<body>
-<!-- HOTBAR -->
-<div class="hotbar" id="hotbar">
-  <button class="active" onclick="switchTab('proxy',this)">Home</button>
-  <button onclick="switchTab('games',this)">Games</button>
-  <button onclick="switchTab('apps',this)">Applications</button>
-  <button onclick="switchTab('settings',this)">Configurations</button>
-  <div class="indicator" id="indicator"></div>
-</div>
-<!-- PARTICLES -->
-<div class="particles" id="particles"></div>
-<!-- CONTENT -->
-<div class="container">
-  <div id="proxy" class="section active animate">
-    <h1>Proxy</h1>
-    <div class="bio">search freely through the web</div>
-    <div class="input-wrapper">
-      <input id="urlInput" placeholder="https://example.com">
-    </div>
-    <button class="action" onclick="openProxy()">Open</button>
-  </div>
-  <div id="games" class="section">
-    <h1>Games</h1>
-    <div class="bio">Will be added soon</div>
-  </div>
-  <div id="apps" class="section">
-    <h1>Apps</h1>
-    <div class="bio">Will be added soon</div>
-  </div>
-  <div id="settings" class="section">
-    <h1>Settings</h1>
-    <div class="bio">Preferences</div>
-    <button class="action">Theme</button>
-    <button class="action">Clear Data</button>
-  </div>
-</div>
-<script>
 /* SCRAMJET INIT */
 const { ScramjetController } = $scramjetLoadController();
 const scramjet = new ScramjetController({
@@ -54,59 +7,12 @@ const scramjet = new ScramjetController({
     sync: "/scram/scramjet.sync.js",
   },
 });
-scramjet.init("/sw.js");
-navigator.serviceWorker.register("/sw.js", { scope: "/" });
-const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
-conn.setTransport("/epoxy/index.mjs", ["wss://math-hacks.onrender.com/bare/"]);
 
-/* HOTBAR INDICATOR */
-const indicator = document.getElementById("indicator");
-const hotbar = document.getElementById("hotbar");
-function updateIndicator(btn) {
-  const r = btn.getBoundingClientRect();
-  const p = hotbar.getBoundingClientRect();
-  const lineWidth = r.width * 0.55;
-  indicator.style.width = lineWidth + "px";
-  indicator.style.left = (r.left - p.left) + (r.width - lineWidth) / 2 + "px";
-}
-window.onload = () => {
-  updateIndicator(document.querySelector(".hotbar .active"));
-};
-
-/* TAB SWITCH */
-function switchTab(id, btn) {
-  document.querySelectorAll(".section").forEach(s => {
-    s.classList.remove("active", "animate");
-  });
-  const target = document.getElementById(id);
-  target.classList.add("active");
-  void target.offsetWidth;
-  target.classList.add("animate");
-  document.querySelectorAll(".hotbar button").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  updateIndicator(btn);
+async function initScramjet() {
+  await scramjet.init("/sw.js");
+  await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+  const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
+  await conn.setTransport("/epoxy/index.mjs", ["wss://math-hacks.onrender.com/bare/"]);
 }
 
-/* PROXY */
-function openProxy() {
-  const input = document.getElementById("urlInput").value.trim();
-  if (!input) return;
-  const target = input.startsWith("http") ? input : "https://" + input;
-  window.open(scramjet.encodeUrl(target), "_blank");
-}
-
-/* PARTICLES */
-const pc = document.getElementById("particles");
-for (let i = 0; i < 50; i++) {
-  const p = document.createElement("div");
-  p.className = "particle";
-  const s = 3 + Math.random() * 6;
-  p.style.width = p.style.height = s + "px";
-  p.style.left = Math.random() * 100 + "vw";
-  p.style.animationDuration = 12 + Math.random() * 20 + "s";
-  p.style.animationDelay = Math.random() * 20 + "s";
-  pc.appendChild(p);
-}
-</script>
-</body>
-</html>
+initScramjet();
