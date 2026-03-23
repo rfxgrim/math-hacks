@@ -6,6 +6,10 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "@mercuryworkshop/scramjet": "latest",
+    "@mercuryworkshop/bare-mux": "latest",
+    "@mercuryworkshop/epoxy-transport": "latest",
+    "@tomphttp/bare-server-node": "latest"
   }
 }

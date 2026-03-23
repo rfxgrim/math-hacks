@@ -1,32 +1,42 @@
-import express from "express";
+import { scramjetPath } from "@mercuryworkshop/scramjet/path";
+import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
+import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import { createServer } from "http";
-import path from "path";
+import { createBareServer } from "@tomphttp/bare-server-node";
+import express from "express";
 import { fileURLToPath } from "url";
+import path from "path";
 
-// ESM path fix
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Import Rammerhead server
-import rammerhead from "./rammerhead/server.js";
-
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const server = createServer(app);
+const bareServer = createBareServer("/bare/");
 
-// Serve your static site
-app.use(express.static(__dirname));
+// Serve Scramjet files under /scram/
+app.use("/scram/", express.static(scramjetPath));
 
-// Mount Rammerhead at /proxy
-rammerhead(server, {
-  path: "/proxy"
+// Serve BareMux files under /baremux/
+app.use("/baremux/", express.static(baremuxPath));
+
+// Serve Epoxy transport under /epoxy/
+app.use("/epoxy/", express.static(epoxyPath));
+
+// Serve your public folder
+app.use(express.static(path.join(__dirname, "public")));
+
+const server = createServer((req, res) => {
+  if (bareServer.shouldRoute(req)) {
+    bareServer.routeRequest(req, res);
+  } else {
+    app(req, res);
+  }
 });
 
-// SPA fallback
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+server.on("upgrade", (req, socket, head) => {
+  if (bareServer.shouldRoute(req)) {
+    bareServer.routeUpgrade(req, socket, head);
+  } else {
+    socket.destroy();
+  }
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Math-Hacks running on port ${PORT}`);
-});
+server.listen(3000, () => console.log("Running on http://localhost:3000"));
