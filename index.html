@@ -46,17 +46,17 @@
 <script src="/scram/scramjet.controller.js"></script>
 <script src="/baremux/index.js"></script>
 <script>
-/* SCRAMJET INIT */
-const { ScramjetController } = $scramjetLoadController();
-const scramjet = new ScramjetController({
-  files: {
-    wasm: "/scram/scramjet.wasm.wasm",
-    all: "/scram/scramjet.all.js",
-    sync: "/scram/scramjet.sync.js",
-  },
-});
+let scramjet = null;
 
 async function initScramjet() {
+  const { ScramjetController } = $scramjetLoadController();
+  scramjet = new ScramjetController({
+    files: {
+      wasm: "/scram/scramjet.wasm.wasm",
+      all: "/scram/scramjet.all.js",
+      sync: "/scram/scramjet.sync.js",
+    },
+  });
   await scramjet.init("/sw.js");
   await navigator.serviceWorker.register("/sw.js", { scope: "/" });
   const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
@@ -95,6 +95,10 @@ function switchTab(id, btn) {
 
 /* PROXY */
 async function openProxy() {
+  if (!scramjet) {
+    alert("Proxy is still loading, please wait a moment and try again.");
+    return;
+  }
   const input = document.getElementById("urlInput").value.trim();
   if (!input) return;
   const target = input.startsWith("http") ? input : "https://" + input;
