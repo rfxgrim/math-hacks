@@ -7,9 +7,10 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "@mercuryworkshop/scramjet": "latest",
+    "@mercuryworkshop/scramjet": "^1.0.2",
     "@mercuryworkshop/bare-mux": "latest",
     "@mercuryworkshop/epoxy-transport": "latest",
-    "@tomphttp/bare-server-node": "^2.0.6"
+    "@tomphttp/bare-server-node": "^2.0.0",
+    "wisp-server-node": "latest"
   }
 }

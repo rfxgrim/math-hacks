@@ -3,26 +3,30 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createBareServer } from "@tomphttp/bare-server-node";
-import { scramjetPath } from "@mercuryworkshop/scramjet/path";
-import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
-import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
+import { createRequire } from "module";
 
+const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const bareServer = createBareServer("/bare/");
 
-app.use("/scram/", express.static(scramjetPath));
-app.use("/baremux/", express.static(baremuxPath));
-app.use("/epoxy/", express.static(epoxyPath));
+// Serve scramjet files directly from node_modules
+const scramjetDir = path.join(__dirname, "node_modules/@mercuryworkshop/scramjet/dist");
+const baremuxDir = path.join(__dirname, "node_modules/@mercuryworkshop/bare-mux/dist");
+const epoxyDir = path.join(__dirname, "node_modules/@mercuryworkshop/epoxy-transport/dist");
 
+app.use("/scram/", express.static(scramjetDir));
+app.use("/baremux/", express.static(baremuxDir));
+app.use("/epoxy/", express.static(epoxyDir));
+
+// Serve your static site
 app.use(express.static(__dirname));
 
+// SPA fallback
 app.get("*", (req, res) => {
-  if (!bareServer.shouldRoute(req)) {
-    res.sendFile(path.join(__dirname, "index.html"));
-  }
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 const server = createServer((req, res) => {
