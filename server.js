@@ -12,19 +12,20 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const bareServer = createBareServer("/bare/");
 
-// Serve scramjet files directly from node_modules
-const scramjetDir = path.join(__dirname, "node_modules/@mercuryworkshop/scramjet/dist");
-const baremuxDir = path.join(__dirname, "node_modules/@mercuryworkshop/bare-mux/dist");
-const epoxyDir = path.join(__dirname, "node_modules/@mercuryworkshop/epoxy-transport/dist");
+const scramjetDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "scramjet", "dist");
+const baremuxDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "bare-mux", "dist");
+const epoxyDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "epoxy-transport", "dist");
+
+console.log("Scramjet path:", scramjetDir);
+console.log("Baremux path:", baremuxDir);
+console.log("Epoxy path:", epoxyDir);
 
 app.use("/scram/", express.static(scramjetDir));
 app.use("/baremux/", express.static(baremuxDir));
 app.use("/epoxy/", express.static(epoxyDir));
 
-// Serve your static site
 app.use(express.static(__dirname));
 
-// SPA fallback
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
