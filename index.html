@@ -23,6 +23,7 @@
     <h1>Proxy</h1>
     <div class="bio">search freely through the web</div>
     <div class="input-wrapper" id="inputWrapper">
+      <canvas class="spin-canvas" id="spinCanvas"></canvas>
       <input id="urlInput" placeholder="https://example.com">
     </div>
     <button class="action" onclick="openProxy()">Open</button>
@@ -66,6 +67,67 @@ async function initScramjet() {
 
 initScramjet();
 
+/* SPINNING BORDER VIA CANVAS */
+const canvas = document.getElementById("spinCanvas");
+const ctx = canvas.getContext("2d");
+let angle = 0;
+let last = null;
+
+function resizeCanvas() {
+  const wrapper = document.getElementById("inputWrapper");
+  const rect = wrapper.getBoundingClientRect();
+  canvas.width = rect.width + 4;
+  canvas.height = rect.height + 4;
+}
+
+function drawSpinner(ts) {
+  if (last !== null) {
+    const delta = ts - last;
+    angle += (delta / 1000) * (Math.PI * 2); // full rotation per 1s... adjust divisor for speed
+  }
+  last = ts;
+
+  resizeCanvas();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const w = canvas.width;
+  const h = canvas.height;
+  const r = 14; // border radius
+  const cx = w / 2;
+  const cy = h / 2;
+  const rx = w / 2 - 1;
+  const ry = h / 2 - 1;
+
+  // Draw the spinning arc border
+  ctx.save();
+  ctx.lineWidth = 2;
+
+  // Create rounded rect path for clipping
+  ctx.beginPath();
+  ctx.roundRect(1, 1, w - 2, h - 2, r);
+  ctx.clip();
+
+  // Draw conic-like effect: gradient arc
+  const grad = ctx.createConicGradient(angle, cx, cy);
+  grad.addColorStop(0, "transparent");
+  grad.addColorStop(0.55, "transparent");
+  grad.addColorStop(0.7, "#3b82f6");
+  grad.addColorStop(0.85, "transparent");
+  grad.addColorStop(1, "transparent");
+
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.restore();
+
+  requestAnimationFrame(drawSpinner);
+}
+
+window.addEventListener("load", () => {
+  resizeCanvas();
+  requestAnimationFrame(drawSpinner);
+});
+
 /* HOTBAR INDICATOR */
 const indicator = document.getElementById("indicator");
 const hotbar = document.getElementById("hotbar");
@@ -78,6 +140,8 @@ function updateIndicator(btn) {
 }
 window.onload = () => {
   updateIndicator(document.querySelector(".hotbar .active"));
+  resizeCanvas();
+  requestAnimationFrame(drawSpinner);
 };
 
 /* TAB SWITCH */
@@ -118,15 +182,6 @@ for (let i = 0; i < 50; i++) {
   p.style.animationDelay = Math.random() * 20 + "s";
   pc.appendChild(p);
 }
-
-/* FIX SPINNING BORDER ON TAB SWITCH */
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) {
-    const wrapper = document.getElementById("inputWrapper");
-    const clone = wrapper.cloneNode(true);
-    wrapper.parentNode.replaceChild(clone, wrapper);
-  }
-});
 </script>
 </body>
 </html>

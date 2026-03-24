@@ -143,13 +143,7 @@ input {
   color:var(--text);
 }
 
-/* SPINNING BORDER */
-@property --angle {
-  syntax:"<angle>";
-  initial-value:0deg;
-  inherits:false;
-}
-
+/* SPINNING BORDER — driven by canvas */
 .input-wrapper {
   position:relative;
   width:100%;
@@ -157,18 +151,14 @@ input {
   border-radius:14px;
 }
 
-.input-wrapper::before {
-  content:"";
+.spin-canvas {
   position:absolute;
   inset:-2px;
+  width:calc(100% + 4px);
+  height:calc(100% + 4px);
   border-radius:14px;
-  background:conic-gradient(
-    from var(--angle),
-    transparent 65%,
-    var(--accent),
-    transparent
-  );
-  animation:spin 2s linear infinite;
+  pointer-events:none;
+  z-index:0;
 }
 
 .input-wrapper::after {
@@ -183,9 +173,4 @@ input {
 #urlInput {
   position:relative;
   z-index:2;
-}
-
-@keyframes spin {
-  from { --angle:0deg; }
-  to { --angle:360deg; }
 }
