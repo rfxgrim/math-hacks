@@ -22,7 +22,7 @@
   <div id="proxy" class="section active animate">
     <h1>Proxy</h1>
     <div class="bio">search freely through the web</div>
-    <div class="input-wrapper">
+    <div class="input-wrapper" id="inputWrapper">
       <input id="urlInput" placeholder="https://example.com">
     </div>
     <button class="action" onclick="openProxy()">Open</button>
@@ -122,10 +122,9 @@ for (let i = 0; i < 50; i++) {
 /* FIX SPINNING BORDER ON TAB SWITCH */
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
-    const wrapper = document.querySelector(".input-wrapper");
-    wrapper.style.animation = "none";
-    wrapper.offsetHeight;
-    wrapper.style.animation = "";
+    const wrapper = document.getElementById("inputWrapper");
+    const clone = wrapper.cloneNode(true);
+    wrapper.parentNode.replaceChild(clone, wrapper);
   }
 });
 </script>
