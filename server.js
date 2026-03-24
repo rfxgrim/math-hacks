@@ -2,8 +2,8 @@ import express from "express";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
+import { server as wisp } from "@mercuryworkshop/wisp-js/server";
 import { createRequire } from "module";
-import { wisp } from "@mercuryworkshop/wisp-js/server";
 import fs from "fs";
 
 const require = createRequire(import.meta.url);
