@@ -21,10 +21,19 @@ console.log("Scramjet path:", scramjetDir);
 console.log("Baremux path:", baremuxDir);
 console.log("Epoxy path:", epoxyDir);
 
-// Temporary: list scramjet package contents
+// Debug routes
 app.get("/debug-scram", (req, res) => {
   try {
     const files = fs.readdirSync(path.join(__dirname, "node_modules/@mercuryworkshop/scramjet"));
+    res.json(files);
+  } catch(e) {
+    res.json({ error: e.message });
+  }
+});
+
+app.get("/debug-scram-dist", (req, res) => {
+  try {
+    const files = fs.readdirSync(path.join(__dirname, "node_modules/@mercuryworkshop/scramjet/dist"));
     res.json(files);
   } catch(e) {
     res.json({ error: e.message });
