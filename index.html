@@ -47,6 +47,11 @@
 <script src="/baremux/index.js"></script>
 <script src="/scram/scramjet.all.js"></script>
 <script>
+/* UNREGISTER OLD SERVICE WORKERS */
+navigator.serviceWorker.getRegistrations().then(regs => {
+  regs.forEach(reg => reg.unregister());
+});
+
 let scramjet = null;
 
 async function initScramjet() {
@@ -59,7 +64,7 @@ async function initScramjet() {
     },
   });
   await scramjet.init("/sw.js");
-  await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+  await navigator.serviceWorker.register("/sw.js", { scope: "/scramjet/" });
   const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
   await conn.setTransport("/epoxy/index.mjs", ["wss://math-hacks.onrender.com/wisp/"]);
   console.log("Scramjet ready");
@@ -127,4 +132,10 @@ window.addEventListener("load", () => {
 });
 
 /* HOTBAR INDICATOR */
-const indicator = document.getEl
+const indicator = document.getElementById("indicator");
+const hotbar = document.getElementById("hotbar");
+function updateIndicator(btn) {
+  const r = btn.getBoundingClientRect();
+  const p = hotbar.getBoundingClientRect();
+  const lineWidth = r.width * 0.55;
+  indicator.style.wid
