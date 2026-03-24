@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { createBareServer } from "@tomphttp/bare-server-node";
 import { createRequire } from "module";
+import fs from "fs";
 
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
@@ -19,6 +20,16 @@ const epoxyDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "epoxy
 console.log("Scramjet path:", scramjetDir);
 console.log("Baremux path:", baremuxDir);
 console.log("Epoxy path:", epoxyDir);
+
+// Temporary: list scramjet package contents
+app.get("/debug-scram", (req, res) => {
+  try {
+    const files = fs.readdirSync(path.join(__dirname, "node_modules/@mercuryworkshop/scramjet"));
+    res.json(files);
+  } catch(e) {
+    res.json({ error: e.message });
+  }
+});
 
 app.use("/scram/", express.static(scramjetDir));
 app.use("/baremux/", express.static(baremuxDir));
