@@ -61,7 +61,7 @@ async function initScramjet() {
   await scramjet.init("/sw.js");
   await navigator.serviceWorker.register("/sw.js", { scope: "/" });
   const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
-  await conn.setTransport("/epoxy/index.mjs", [{ wisp: "wss://math-hacks.onrender.com/wisp/" }]);
+  await conn.setTransport("/epoxy/index.mjs", ["wss://math-hacks.onrender.com/wisp/"]);
   console.log("Scramjet ready");
 }
 
@@ -92,14 +92,12 @@ function drawSpinner(ts) {
 
   const w = canvas.width;
   const h = canvas.height;
-  const r = 14;
   const cx = w / 2;
   const cy = h / 2;
 
   ctx.save();
-
   ctx.beginPath();
-  ctx.roundRect(1, 1, w - 2, h - 2, r);
+  ctx.roundRect(1, 1, w - 2, h - 2, 14);
   ctx.clip();
 
   const grad = ctx.createConicGradient(angle, cx, cy);
@@ -111,10 +109,8 @@ function drawSpinner(ts) {
 
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, w, h);
-
   ctx.restore();
 
-  // Draw inner mask to make it look like a border only
   ctx.save();
   ctx.beginPath();
   ctx.roundRect(4, 4, w - 8, h - 8, 12);
@@ -131,59 +127,4 @@ window.addEventListener("load", () => {
 });
 
 /* HOTBAR INDICATOR */
-const indicator = document.getElementById("indicator");
-const hotbar = document.getElementById("hotbar");
-function updateIndicator(btn) {
-  const r = btn.getBoundingClientRect();
-  const p = hotbar.getBoundingClientRect();
-  const lineWidth = r.width * 0.55;
-  indicator.style.width = lineWidth + "px";
-  indicator.style.left = (r.left - p.left) + (r.width - lineWidth) / 2 + "px";
-}
-window.onload = () => {
-  updateIndicator(document.querySelector(".hotbar .active"));
-  resizeCanvas();
-  requestAnimationFrame(drawSpinner);
-};
-
-/* TAB SWITCH */
-function switchTab(id, btn) {
-  document.querySelectorAll(".section").forEach(s => {
-    s.classList.remove("active", "animate");
-  });
-  const target = document.getElementById(id);
-  target.classList.add("active");
-  void target.offsetWidth;
-  target.classList.add("animate");
-  document.querySelectorAll(".hotbar button").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  updateIndicator(btn);
-}
-
-/* PROXY */
-async function openProxy() {
-  if (!scramjet) {
-    alert("Proxy is still loading, please wait a moment and try again.");
-    return;
-  }
-  const input = document.getElementById("urlInput").value.trim();
-  if (!input) return;
-  const target = input.startsWith("http") ? input : "https://" + input;
-  window.open(scramjet.encodeUrl(target), "_blank");
-}
-
-/* PARTICLES */
-const pc = document.getElementById("particles");
-for (let i = 0; i < 50; i++) {
-  const p = document.createElement("div");
-  p.className = "particle";
-  const s = 3 + Math.random() * 6;
-  p.style.width = p.style.height = s + "px";
-  p.style.left = Math.random() * 100 + "vw";
-  p.style.animationDuration = 12 + Math.random() * 20 + "s";
-  p.style.animationDelay = Math.random() * 20 + "s";
-  pc.appendChild(p);
-}
-</script>
-</body>
-</html>
+const indicator = document.getEl
