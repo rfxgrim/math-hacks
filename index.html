@@ -83,7 +83,7 @@ function resizeCanvas() {
 function drawSpinner(ts) {
   if (last !== null) {
     const delta = ts - last;
-    angle += (delta / 1000) * (Math.PI * 2); // full rotation per 1s... adjust divisor for speed
+    angle += (delta / 2000) * (Math.PI * 2);
   }
   last = ts;
 
@@ -92,22 +92,17 @@ function drawSpinner(ts) {
 
   const w = canvas.width;
   const h = canvas.height;
-  const r = 14; // border radius
+  const r = 14;
   const cx = w / 2;
   const cy = h / 2;
-  const rx = w / 2 - 1;
-  const ry = h / 2 - 1;
 
-  // Draw the spinning arc border
   ctx.save();
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 4;
 
-  // Create rounded rect path for clipping
   ctx.beginPath();
   ctx.roundRect(1, 1, w - 2, h - 2, r);
   ctx.clip();
 
-  // Draw conic-like effect: gradient arc
   const grad = ctx.createConicGradient(angle, cx, cy);
   grad.addColorStop(0, "transparent");
   grad.addColorStop(0.55, "transparent");
