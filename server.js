@@ -17,23 +17,10 @@ const scramjetDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "sc
 const baremuxDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "bare-mux", "dist");
 const epoxyDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "epoxy-transport", "dist");
 
-console.log("Scramjet path:", scramjetDir);
-console.log("Baremux path:", baremuxDir);
-console.log("Epoxy path:", epoxyDir);
-
 // Debug routes
-app.get("/debug-scram", (req, res) => {
-  try {
-    const files = fs.readdirSync(path.join(__dirname, "node_modules/@mercuryworkshop/scramjet"));
-    res.json(files);
-  } catch(e) {
-    res.json({ error: e.message });
-  }
-});
-
 app.get("/debug-scram-dist", (req, res) => {
   try {
-    const files = fs.readdirSync(path.join(__dirname, "node_modules/@mercuryworkshop/scramjet/dist"));
+    const files = fs.readdirSync(scramjetDir);
     res.json(files);
   } catch(e) {
     res.json({ error: e.message });
