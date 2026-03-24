@@ -43,24 +43,25 @@
   </div>
 </div>
 
-<script src="/scram/scramjet.controller.js"></script>
-<script src="/baremux/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mercuryworkshop/bare-mux@latest/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@latest/dist/scramjet.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport@latest/dist/index.js"></script>
 <script>
 let scramjet = null;
 
 async function initScramjet() {
-  const { ScramjetController } = $scramjetLoadController();
   scramjet = new ScramjetController({
-    files: {
-      wasm: "/scram/scramjet.wasm.wasm",
-      all: "/scram/scramjet.all.js",
-      sync: "/scram/scramjet.sync.js",
-    },
+    prefix: "/scramjet/",
+    wasm: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@latest/dist/scramjet.wasm.wasm",
+    worker: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@latest/dist/scramjet.worker.js",
+    client: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@latest/dist/scramjet.client.js",
+    codecs: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@latest/dist/scramjet.codecs.js",
   });
   await scramjet.init("/sw.js");
   await navigator.serviceWorker.register("/sw.js", { scope: "/" });
   const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
-  await conn.setTransport("/epoxy/index.mjs", ["wss://math-hacks.onrender.com/bare/"]);
+  await conn.setTransport("/epoxy/index.mjs", ["wss://math-hacks.onrender.com/wisp/"]);
+  console.log("Scramjet ready");
 }
 
 initScramjet();
