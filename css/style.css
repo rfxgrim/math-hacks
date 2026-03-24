@@ -138,3 +138,54 @@ input {
   padding:14px;
   border-radius:12px;
   border:none;
+  outline:none;
+  background:var(--card);
+  color:var(--text);
+}
+
+/* SPINNING BORDER */
+.input-wrapper {
+  position:relative;
+  width:100%;
+  margin-bottom:16px;
+  border-radius:14px;
+}
+
+.input-wrapper::before {
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border-radius:14px;
+  padding:2px;
+  background:conic-gradient(
+    from 0deg,
+    transparent 65%,
+    var(--accent),
+    transparent
+  );
+  animation:spin 2s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+}
+
+.input-wrapper::after {
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:12px;
+  background:var(--card);
+  z-index:1;
+}
+
+#urlInput {
+  position:relative;
+  z-index:2;
+}
+
+@keyframes spin {
+  from { transform:rotate(0deg); }
+  to { transform:rotate(360deg); }
+}
