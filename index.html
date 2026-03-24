@@ -76,8 +76,8 @@ let last = null;
 function resizeCanvas() {
   const wrapper = document.getElementById("inputWrapper");
   const rect = wrapper.getBoundingClientRect();
-  canvas.width = rect.width + 4;
-  canvas.height = rect.height + 4;
+  canvas.width = rect.width + 6;
+  canvas.height = rect.height + 6;
 }
 
 function drawSpinner(ts) {
@@ -97,7 +97,6 @@ function drawSpinner(ts) {
   const cy = h / 2;
 
   ctx.save();
-  ctx.lineWidth = 4;
 
   ctx.beginPath();
   ctx.roundRect(1, 1, w - 2, h - 2, r);
@@ -105,14 +104,22 @@ function drawSpinner(ts) {
 
   const grad = ctx.createConicGradient(angle, cx, cy);
   grad.addColorStop(0, "transparent");
-  grad.addColorStop(0.55, "transparent");
-  grad.addColorStop(0.7, "#3b82f6");
-  grad.addColorStop(0.85, "transparent");
+  grad.addColorStop(0.50, "transparent");
+  grad.addColorStop(0.65, "#3b82f6");
+  grad.addColorStop(0.80, "transparent");
   grad.addColorStop(1, "transparent");
 
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, w, h);
 
+  ctx.restore();
+
+  // Draw inner mask to make it look like a border only
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(4, 4, w - 8, h - 8, 12);
+  ctx.fillStyle = "#14141a";
+  ctx.fill();
   ctx.restore();
 
   requestAnimationFrame(drawSpinner);
