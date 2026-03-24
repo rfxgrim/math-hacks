@@ -32,6 +32,7 @@ app.use("/epoxy/", express.static(epoxyDir));
 app.use(express.static(__dirname));
 
 app.get("*", (req, res) => {
+  if (req.url.startsWith("/scramjet/")) return;
   res.sendFile(path.join(__dirname, "index.html"));
 });
 

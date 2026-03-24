@@ -50,7 +50,6 @@
 let scramjet = null;
 
 async function initScramjet() {
-  // Unregister old service workers first and wait
   const regs = await navigator.serviceWorker.getRegistrations();
   await Promise.all(regs.map(reg => reg.unregister()));
 
@@ -63,7 +62,17 @@ async function initScramjet() {
     },
   });
   await scramjet.init("/sw.js");
-  await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+
+  // Wait for service worker to be active
+  await new Promise(resolve => {
+    if (reg.active) return resolve();
+    const sw = reg.installing || reg.waiting;
+    sw.addEventListener("statechange", e => {
+      if (e.target.state === "activated") resolve();
+    });
+  });
+
   const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
   await conn.setTransport("/epoxy/index.mjs", ["wss://math-hacks.onrender.com/wisp/"]);
   console.log("Scramjet ready");
