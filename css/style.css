@@ -144,6 +144,12 @@ input {
 }
 
 /* SPINNING BORDER */
+@property --angle {
+  syntax:"<angle>";
+  initial-value:0deg;
+  inherits:false;
+}
+
 .input-wrapper {
   position:relative;
   width:100%;
@@ -156,19 +162,13 @@ input {
   position:absolute;
   inset:-2px;
   border-radius:14px;
-  padding:2px;
   background:conic-gradient(
-    from 0deg,
+    from var(--angle),
     transparent 65%,
     var(--accent),
     transparent
   );
   animation:spin 2s linear infinite;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite:xor;
-  mask-composite:exclude;
 }
 
 .input-wrapper::after {
@@ -186,6 +186,6 @@ input {
 }
 
 @keyframes spin {
-  from { transform:rotate(0deg); }
-  to { transform:rotate(360deg); }
+  from { --angle:0deg; }
+  to { --angle:360deg; }
 }
