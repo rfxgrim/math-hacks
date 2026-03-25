@@ -3,17 +3,14 @@ importScripts("/assets/scramjet/scramjet.all.js");
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
-self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
-  if (url.pathname.startsWith("/assets/")) return;
-  if (url.pathname.startsWith("/css/")) return;
-  if (url.pathname.startsWith("/js/")) return;
-  if (url.pathname === "/sw.js") return;
-  if (url.pathname === "/go.html") return;
-  if (url.pathname === "/" || url.pathname === "/index.html") return;
-  if (!url.pathname.startsWith("/scramjet/")) return;
-
+async function handleRequest(event) {
+  await scramjet.loadConfig();
   if (scramjet.route(event)) {
-    event.respondWith(scramjet.fetch(event));
+    return scramjet.fetch(event);
   }
+  return fetch(event.request);
+}
+
+self.addEventListener("fetch", (event) => {
+  event.respondWith(handleRequest(event));
 });
