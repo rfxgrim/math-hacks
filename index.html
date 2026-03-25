@@ -44,42 +44,44 @@
   </div>
 </div>
 
-<script src="/assets/baremux/index.js"></script>
-<script src="/assets/scramjet/scramjet.all.js"></script>
 <script>
-let scramjet = null;
+/* HOTBAR INDICATOR */
+const indicator = document.getElementById("indicator");
+const hotbar = document.getElementById("hotbar");
+function updateIndicator(btn) {
+  const r = btn.getBoundingClientRect();
+  const p = hotbar.getBoundingClientRect();
+  const lineWidth = r.width * 0.55;
+  indicator.style.width = lineWidth + "px";
+  indicator.style.left = (r.left - p.left) + (r.width - lineWidth) / 2 + "px";
+}
+window.onload = () => {
+  updateIndicator(document.querySelector(".hotbar .active"));
+  resizeCanvas();
+  requestAnimationFrame(drawSpinner);
+};
 
-async function initScramjet() {
-  const regs = await navigator.serviceWorker.getRegistrations();
-  await Promise.all(regs.map(reg => reg.unregister()));
-
-  const { ScramjetController } = $scramjetLoadController();
-  scramjet = new ScramjetController({
-    prefix: "/scramjet/",
-    files: {
-      wasm: "/assets/scramjet/scramjet.wasm.wasm",
-      all: "/assets/scramjet/scramjet.all.js",
-      sync: "/assets/scramjet/scramjet.sync.js",
-    },
+/* TAB SWITCH */
+function switchTab(id, btn) {
+  document.querySelectorAll(".section").forEach(s => {
+    s.classList.remove("active", "animate");
   });
-
-  await scramjet.init("/sw.js");
-  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
-
-  await new Promise(resolve => {
-    if (reg.active) return resolve();
-    const sw = reg.installing || reg.waiting;
-    sw.addEventListener("statechange", e => {
-      if (e.target.state === "activated") resolve();
-    });
-  });
-
-  const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
-  await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
-  console.log("Scramjet ready");
+  const target = document.getElementById(id);
+  target.classList.add("active");
+  void target.offsetWidth;
+  target.classList.add("animate");
+  document.querySelectorAll(".hotbar button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  updateIndicator(btn);
 }
 
-initScramjet();
+/* PROXY */
+function openProxy() {
+  const input = document.getElementById("urlInput").value.trim();
+  if (!input) return;
+  const target = input.startsWith("http") ? input : "https://" + input;
+  window.open("/go.html?url=" + encodeURIComponent(target), "_blank");
+}
 
 /* SPINNING BORDER VIA CANVAS */
 const canvas = document.getElementById("spinCanvas");
@@ -139,53 +141,6 @@ window.addEventListener("load", () => {
   resizeCanvas();
   requestAnimationFrame(drawSpinner);
 });
-
-/* HOTBAR INDICATOR */
-const indicator = document.getElementById("indicator");
-const hotbar = document.getElementById("hotbar");
-function updateIndicator(btn) {
-  const r = btn.getBoundingClientRect();
-  const p = hotbar.getBoundingClientRect();
-  const lineWidth = r.width * 0.55;
-  indicator.style.width = lineWidth + "px";
-  indicator.style.left = (r.left - p.left) + (r.width - lineWidth) / 2 + "px";
-}
-window.onload = () => {
-  updateIndicator(document.querySelector(".hotbar .active"));
-  resizeCanvas();
-  requestAnimationFrame(drawSpinner);
-};
-
-/* TAB SWITCH */
-function switchTab(id, btn) {
-  document.querySelectorAll(".section").forEach(s => {
-    s.classList.remove("active", "animate");
-  });
-  const target = document.getElementById(id);
-  target.classList.add("active");
-  void target.offsetWidth;
-  target.classList.add("animate");
-  document.querySelectorAll(".hotbar button").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  updateIndicator(btn);
-}
-
-/* PROXY */
-async function openProxy() {
-  if (!scramjet) {
-    alert("Proxy is still loading, please wait a moment and try again.");
-    return;
-  }
-  const input = document.getElementById("urlInput").value.trim();
-  if (!input) return;
-  const target = input.startsWith("http") ? input : "https://" + input;
-  location.href = scramjet.encodeUrl(target);
-}
-
-/* PARTICLES */
-const pc = document.getElementById("particles");
-for (let i = 0; i < 50; i++) {
-  const p = document.createElement("div");
-  p.className = "particle";
-  const s = 3 + Math.random() * 6;
-  p.style.width = p.style.height = s + "px";
+</script>
+</body>
+</html>

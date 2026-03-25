@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Loading...</title>
+</head>
+<body>
+<script src="/assets/baremux/index.js"></script>
+<script src="/assets/scramjet/scramjet.all.js"></script>
+<script>
+async function init() {
+  const { ScramjetController } = $scramjetLoadController();
+  const scramjet = new ScramjetController({
+    prefix: "/scramjet/",
+    files: {
+      wasm: "/assets/scramjet/scramjet.wasm.wasm",
+      all: "/assets/scramjet/scramjet.all.js",
+      sync: "/assets/scramjet/scramjet.sync.js",
+    },
+  });
+
+  await scramjet.init("/sw.js");
+  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+
+  await new Promise(resolve => {
+    if (reg.active) return resolve();
+    const sw = reg.installing || reg.waiting;
+    sw.addEventListener("statechange", e => {
+      if (e.target.state === "activated") resolve();
+    });
+  });
+
+  const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
+  await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
+
+  const url = new URLSearchParams(location.search).get("url");
+  if (url) {
+    location.href = scramjet.encodeUrl(url);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
