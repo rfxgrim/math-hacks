@@ -1,9 +1,11 @@
 importScripts("/assets/scramjet/scramjet.all.js");
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
-const scramjet = new ScramjetServiceWorker({
+const scramjet = new ScramjetServiceWorker();
+
+scramjet.config = {
   prefix: "/scramjet/",
-});
+};
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
