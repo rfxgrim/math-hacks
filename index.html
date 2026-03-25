@@ -50,7 +50,6 @@
 let scramjet = null;
 
 async function initScramjet() {
-  // Unregister any broken service workers
   const regs = await navigator.serviceWorker.getRegistrations();
   await Promise.all(regs.map(reg => reg.unregister()));
 
@@ -65,7 +64,7 @@ async function initScramjet() {
   });
 
   await scramjet.init("/sw.js");
-  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/scramjet/" });
+  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
 
   await new Promise(resolve => {
     if (reg.active) return resolve();
@@ -180,7 +179,7 @@ async function openProxy() {
   const input = document.getElementById("urlInput").value.trim();
   if (!input) return;
   const target = input.startsWith("http") ? input : "https://" + input;
-  window.open(scramjet.encodeUrl(target), "_blank");
+  location.href = scramjet.encodeUrl(target);
 }
 
 /* PARTICLES */
