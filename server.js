@@ -16,26 +16,12 @@ const scramjetDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "sc
 const baremuxDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "bare-mux", "dist");
 const epoxyDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "epoxy-transport", "dist");
 
-// Serve proxy assets
-app.use("/scram/", express.static(scramjetDir));
-app.use("/baremux/", express.static(baremuxDir));
-app.use("/epoxy/", express.static(epoxyDir));
+app.use("/assets/scramjet/", express.static(scramjetDir));
+app.use("/assets/baremux/", express.static(baremuxDir));
+app.use("/assets/epoxy/", express.static(epoxyDir));
+
 app.use(express.static(__dirname));
 
-// Keep-alive endpoint for cron-job.org
-app.get("/ping", (req, res) => res.send("pong"));
-
-// Debug route
-app.get("/debug-scram-dist", (req, res) => {
-  try {
-    const files = fs.readdirSync(scramjetDir);
-    res.json(files);
-  } catch(e) {
-    res.json({ error: e.message });
-  }
-});
-
-// Fallback to index.html (SPA routing)
 app.get("*", (req, res) => {
   if (req.url.startsWith("/scramjet/")) return;
   res.sendFile(path.join(__dirname, "index.html"));
@@ -43,17 +29,15 @@ app.get("*", (req, res) => {
 
 const server = createServer(app);
 
-// FIX 1: Flexible Wisp upgrade for Safari/Render compatibility
 server.on("upgrade", (req, socket, head) => {
-  if (req.url.startsWith("/wisp")) {
+  if (req.url.endsWith("/wisp/")) {
     wisp.routeRequest(req, socket, head);
   } else {
     socket.destroy();
   }
 });
 
-// FIX 2: Explicitly bind to 0.0.0.0 and Port 10000
-const PORT = process.env.PORT || 10000;
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`Math-Hacks is Live on port ${PORT}`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Math-Hacks running on port ${PORT}`);
 });

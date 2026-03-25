@@ -44,8 +44,8 @@
   </div>
 </div>
 
-<script src="/baremux/index.js"></script>
-<script src="/scram/scramjet.all.js"></script>
+<script src="/assets/baremux/index.js"></script>
+<script src="/assets/scramjet/scramjet.all.js"></script>
 <script>
 let scramjet = null;
 
@@ -57,9 +57,9 @@ async function initScramjet() {
   scramjet = new ScramjetController({
     prefix: "/scramjet/",
     files: {
-      wasm: "/scram/scramjet.wasm.wasm",
-      all: "/scram/scramjet.all.js",
-      sync: "/scram/scramjet.sync.js",
+      wasm: "/assets/scramjet/scramjet.wasm.wasm",
+      all: "/assets/scramjet/scramjet.all.js",
+      sync: "/assets/scramjet/scramjet.sync.js",
     },
   });
 
@@ -74,8 +74,8 @@ async function initScramjet() {
     });
   });
 
-  const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
-  await conn.setTransport("/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
+  const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
+  await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
   console.log("Scramjet ready");
 }
 
@@ -189,11 +189,3 @@ for (let i = 0; i < 50; i++) {
   p.className = "particle";
   const s = 3 + Math.random() * 6;
   p.style.width = p.style.height = s + "px";
-  p.style.left = Math.random() * 100 + "vw";
-  p.style.animationDuration = 12 + Math.random() * 20 + "s";
-  p.style.animationDelay = Math.random() * 20 + "s";
-  pc.appendChild(p);
-}
-</script>
-</body>
-</html>
