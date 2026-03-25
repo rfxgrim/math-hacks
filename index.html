@@ -50,19 +50,22 @@
 let scramjet = null;
 
 async function initScramjet() {
+  // Unregister any broken service workers
   const regs = await navigator.serviceWorker.getRegistrations();
   await Promise.all(regs.map(reg => reg.unregister()));
 
   const { ScramjetController } = $scramjetLoadController();
   scramjet = new ScramjetController({
+    prefix: "/scramjet/",
     files: {
       wasm: "/scram/scramjet.wasm.wasm",
       all: "/scram/scramjet.all.js",
       sync: "/scram/scramjet.sync.js",
     },
   });
+
   await scramjet.init("/sw.js");
-  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/scramjet/" });
 
   await new Promise(resolve => {
     if (reg.active) return resolve();
@@ -73,4 +76,125 @@ async function initScramjet() {
   });
 
   const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
-  await conn.setTransport("/epoxy/index
+  await conn.setTransport("/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
+  console.log("Scramjet ready");
+}
+
+initScramjet();
+
+/* SPINNING BORDER VIA CANVAS */
+const canvas = document.getElementById("spinCanvas");
+const ctx = canvas.getContext("2d");
+let angle = 0;
+let last = null;
+
+function resizeCanvas() {
+  const wrapper = document.getElementById("inputWrapper");
+  const rect = wrapper.getBoundingClientRect();
+  canvas.width = rect.width + 6;
+  canvas.height = rect.height + 6;
+}
+
+function drawSpinner(ts) {
+  if (last !== null) {
+    const delta = ts - last;
+    angle += (delta / 2000) * (Math.PI * 2);
+  }
+  last = ts;
+
+  resizeCanvas();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const w = canvas.width;
+  const h = canvas.height;
+  const cx = w / 2;
+  const cy = h / 2;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(1, 1, w - 2, h - 2, 14);
+  ctx.clip();
+
+  const grad = ctx.createConicGradient(angle, cx, cy);
+  grad.addColorStop(0, "transparent");
+  grad.addColorStop(0.50, "transparent");
+  grad.addColorStop(0.65, "#3b82f6");
+  grad.addColorStop(0.80, "transparent");
+  grad.addColorStop(1, "transparent");
+
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(4, 4, w - 8, h - 8, 12);
+  ctx.fillStyle = "#14141a";
+  ctx.fill();
+  ctx.restore();
+
+  requestAnimationFrame(drawSpinner);
+}
+
+window.addEventListener("load", () => {
+  resizeCanvas();
+  requestAnimationFrame(drawSpinner);
+});
+
+/* HOTBAR INDICATOR */
+const indicator = document.getElementById("indicator");
+const hotbar = document.getElementById("hotbar");
+function updateIndicator(btn) {
+  const r = btn.getBoundingClientRect();
+  const p = hotbar.getBoundingClientRect();
+  const lineWidth = r.width * 0.55;
+  indicator.style.width = lineWidth + "px";
+  indicator.style.left = (r.left - p.left) + (r.width - lineWidth) / 2 + "px";
+}
+window.onload = () => {
+  updateIndicator(document.querySelector(".hotbar .active"));
+  resizeCanvas();
+  requestAnimationFrame(drawSpinner);
+};
+
+/* TAB SWITCH */
+function switchTab(id, btn) {
+  document.querySelectorAll(".section").forEach(s => {
+    s.classList.remove("active", "animate");
+  });
+  const target = document.getElementById(id);
+  target.classList.add("active");
+  void target.offsetWidth;
+  target.classList.add("animate");
+  document.querySelectorAll(".hotbar button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  updateIndicator(btn);
+}
+
+/* PROXY */
+async function openProxy() {
+  if (!scramjet) {
+    alert("Proxy is still loading, please wait a moment and try again.");
+    return;
+  }
+  const input = document.getElementById("urlInput").value.trim();
+  if (!input) return;
+  const target = input.startsWith("http") ? input : "https://" + input;
+  window.open(scramjet.encodeUrl(target), "_blank");
+}
+
+/* PARTICLES */
+const pc = document.getElementById("particles");
+for (let i = 0; i < 50; i++) {
+  const p = document.createElement("div");
+  p.className = "particle";
+  const s = 3 + Math.random() * 6;
+  p.style.width = p.style.height = s + "px";
+  p.style.left = Math.random() * 100 + "vw";
+  p.style.animationDuration = 12 + Math.random() * 20 + "s";
+  p.style.animationDelay = Math.random() * 20 + "s";
+  pc.appendChild(p);
+}
+</script>
+</body>
+</html>
