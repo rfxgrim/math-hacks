@@ -8,7 +8,7 @@
 <script src="/assets/baremux/index.js"></script>
 <script src="/assets/scramjet/scramjet.all.js"></script>
 <script>
-async function init() {
+(async () => {
   const { ScramjetController } = $scramjetLoadController();
   const scramjet = new ScramjetController({
     prefix: "/scramjet/",
@@ -19,8 +19,9 @@ async function init() {
     },
   });
 
-  await scramjet.init("/sw.js");
-  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+  await scramjet.init("/scramjet/sw.js");
+
+  const reg = await navigator.serviceWorker.register("/scramjet/sw.js", { scope: "/scramjet/" });
 
   await new Promise(resolve => {
     if (reg.active) return resolve();
@@ -30,6 +31,8 @@ async function init() {
     });
   });
 
+  await new Promise(r => setTimeout(r, 500));
+
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
   await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
 
@@ -37,9 +40,7 @@ async function init() {
   if (url) {
     location.href = scramjet.encodeUrl(url);
   }
-}
-
-init();
+})();
 </script>
 </body>
 </html>
