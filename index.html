@@ -73,7 +73,7 @@ async function initScramjet() {
   });
 
   const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
-  await conn.setTransport("/epoxy/index.mjs", ["wss://wisp.mercurywork.shop/"]);
+  await conn.setTransport("/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
   console.log("Scramjet ready");
 }
 
