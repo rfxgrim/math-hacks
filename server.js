@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { server as wisp } from "@mercuryworkshop/wisp-js/server";
 import { createRequire } from "module";
-import fs from "fs";
 
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
@@ -23,7 +22,6 @@ app.use("/assets/epoxy/", express.static(epoxyDir));
 app.use(express.static(__dirname));
 
 app.get("*", (req, res) => {
-  if (req.url.startsWith("/scramjet/")) return;
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
