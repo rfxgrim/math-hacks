@@ -5,6 +5,7 @@
   <title>Loading...</title>
 </head>
 <body>
+<p>Loading proxy...</p>
 <script src="/assets/baremux/index.js"></script>
 <script src="/assets/scramjet/scramjet.all.js"></script>
 <script>
@@ -36,8 +37,7 @@
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
   await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
 
-  // Verify transport is set before navigating
-  await new Promise(r => setTimeout(r, 500));
+  await new Promise(r => setTimeout(r, 2000));
 
   const url = new URLSearchParams(location.search).get("url");
   if (url) {
