@@ -14,9 +14,3 @@ async function handleRequest(event) {
 self.addEventListener("fetch", (event) => {
   event.respondWith(handleRequest(event));
 });
-
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "baremux") {
-    scramjet.setTransport(event.data.transport);
-  }
-});

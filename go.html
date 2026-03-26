@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Loading...</title>
+  <style>
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+    #sj-frame { width: 100%; height: 100%; border: none; }
+  </style>
 </head>
 <body>
-<p>Loading proxy...</p>
 <script src="/assets/baremux/index.js"></script>
 <script src="/assets/scramjet/scramjet.all.js"></script>
 <script>
 (async () => {
   const { ScramjetController } = $scramjetLoadController();
   const scramjet = new ScramjetController({
-    prefix: "/scramjet/",
     files: {
       wasm: "/assets/scramjet/scramjet.wasm.wasm",
       all: "/assets/scramjet/scramjet.all.js",
@@ -20,28 +22,23 @@
     },
   });
 
-  await scramjet.init("/sw.js");
+  scramjet.init();
 
-  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/scramjet/" });
-
-  await new Promise(resolve => {
-    if (reg.active) return resolve();
-    const sw = reg.installing || reg.waiting;
-    sw.addEventListener("statechange", e => {
-      if (e.target.state === "activated") resolve();
-    });
-  });
-
-  await new Promise(r => setTimeout(r, 2000));
+  await navigator.serviceWorker.register("/sw.js");
 
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
-  await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
+  const wispUrl = "wss://" + location.host + "/wisp/";
 
-  await new Promise(r => setTimeout(r, 500));
+  if ((await conn.getTransport()) !== "/assets/libcurl/index.mjs") {
+    await conn.setTransport("/assets/libcurl/index.mjs", [{ websocket: wispUrl }]);
+  }
 
   const url = new URLSearchParams(location.search).get("url");
   if (url) {
-    location.href = scramjet.encodeUrl(url);
+    const frame = scramjet.createFrame();
+    frame.frame.id = "sj-frame";
+    document.body.appendChild(frame.frame);
+    frame.go(url);
   }
 })();
 </script>

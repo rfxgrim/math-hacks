@@ -13,11 +13,11 @@ const app = express();
 
 const scramjetDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "scramjet", "dist");
 const baremuxDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "bare-mux", "dist");
-const epoxyDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "epoxy-transport", "dist");
+const libcurlDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "libcurl-transport", "dist");
 
 app.use("/assets/scramjet/", express.static(scramjetDir));
 app.use("/assets/baremux/", express.static(baremuxDir));
-app.use("/assets/epoxy/", express.static(epoxyDir));
+app.use("/assets/libcurl/", express.static(libcurlDir));
 
 app.use(express.static(__dirname));
 

@@ -9,7 +9,7 @@
     "express": "^4.18.2",
     "@mercuryworkshop/scramjet": "https://github.com/MercuryWorkshop/scramjet/releases/download/latest/mercuryworkshop-scramjet-2.0.0-alpha.tgz",
     "@mercuryworkshop/bare-mux": "latest",
-    "@mercuryworkshop/epoxy-transport": "latest",
+    "@mercuryworkshop/libcurl-transport": "latest",
     "@mercuryworkshop/wisp-js": "latest"
   }
 }
