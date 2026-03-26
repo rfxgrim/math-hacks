@@ -19,9 +19,9 @@
     },
   });
 
-  await scramjet.init("/scramjet/sw.js");
+  await scramjet.init("/sw.js");
 
-  const reg = await navigator.serviceWorker.register("/scramjet/sw.js", { scope: "/scramjet/" });
+  const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/scramjet/" });
 
   await new Promise(resolve => {
     if (reg.active) return resolve();
