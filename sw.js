@@ -6,9 +6,11 @@ const scramjet = new ScramjetServiceWorker();
 scramjet.config = {
   prefix: "/scramjet/",
   codec: "plain",
-  wasm: "/assets/scramjet/scramjet.wasm.wasm",
-  all: "/assets/scramjet/scramjet.all.js",
-  sync: "/assets/scramjet/scramjet.sync.js",
+  files: {
+    wasm: "/assets/scramjet/scramjet.wasm.wasm",
+    all: "/assets/scramjet/scramjet.all.js",
+    sync: "/assets/scramjet/scramjet.sync.js",
+  },
 };
 
 async function handleRequest(event) {
