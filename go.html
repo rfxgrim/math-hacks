@@ -26,11 +26,8 @@
   await navigator.serviceWorker.register("/sw.js");
 
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
-  const wispUrl = "wss://" + location.host + "/wisp/";
 
-  if ((await conn.getTransport()) !== "/assets/epoxy/index.mjs") {
-    await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: wispUrl }]);
-  }
+  await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
 
   const url = new URLSearchParams(location.search).get("url");
   if (url) {
