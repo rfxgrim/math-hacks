@@ -4,14 +4,142 @@
   <meta charset="UTF-8">
   <title>Loading...</title>
   <style>
-    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
-    #sj-frame { width: 100%; height: 100%; border: none; }
+    :root {
+      --bg: #0b0b0f;
+      --accent: #3b82f6;
+      --particle: rgba(255,255,255,.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #fff;
+    }
+
+    #sj-frame {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+    }
+
+    .loader {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: inline-block;
+      position: relative;
+      border: 4px solid;
+      border-color: #fff #fff transparent transparent;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+    }
+
+    .loader::after, .loader::before {
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      margin: auto;
+      border: 4px solid;
+      border-color: transparent transparent var(--accent) var(--accent);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      animation: rotationBack 0.5s linear infinite;
+      transform-origin: center center;
+    }
+
+    .loader::before {
+      width: 48px;
+      height: 48px;
+      border-color: #fff #fff transparent transparent;
+      animation: rotation 1.5s linear infinite;
+    }
+
+    @keyframes rotation {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes rotationBack {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
+    }
+
+    .loading-text {
+      margin-top: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.05em;
+    }
+
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      bottom: -20px;
+      border-radius: 50%;
+      background: var(--particle);
+      animation: rise linear infinite;
+    }
+
+    @keyframes rise {
+      from { transform: translateY(0); opacity: 0; }
+      10% { opacity: 1; }
+      to { transform: translateY(-120vh); opacity: 0; }
+    }
+
+    .loader-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
+<div class="particles" id="particles"></div>
+<div class="loader-wrapper" id="loaderWrapper">
+  <span class="loader"></span>
+  <p class="loading-text">Loading Proxy...</p>
+</div>
+<iframe id="sj-frame"></iframe>
+
 <script src="/assets/baremux/index.js"></script>
 <script src="/assets/scramjet/scramjet.all.js"></script>
 <script>
+/* PARTICLES */
+const pc = document.getElementById("particles");
+for (let i = 0; i < 50; i++) {
+  const p = document.createElement("div");
+  p.className = "particle";
+  const s = 3 + Math.random() * 6;
+  p.style.width = p.style.height = s + "px";
+  p.style.left = Math.random() * 100 + "vw";
+  p.style.animationDuration = 12 + Math.random() * 20 + "s";
+  p.style.animationDelay = Math.random() * 20 + "s";
+  pc.appendChild(p);
+}
+
 (async () => {
   const { ScramjetController } = $scramjetLoadController();
   const scramjet = new ScramjetController({
@@ -26,7 +154,6 @@
   await navigator.serviceWorker.register("/sw.js");
 
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
-
   await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
 
   const url = new URLSearchParams(location.search).get("url");
@@ -34,6 +161,8 @@
     const frame = scramjet.createFrame();
     frame.frame.id = "sj-frame";
     document.body.appendChild(frame.frame);
+    frame.frame.style.display = "block";
+    document.getElementById("loaderWrapper").style.display = "none";
     frame.go(url);
   }
 })();
