@@ -31,7 +31,8 @@
     });
   });
 
-  await new Promise(r => setTimeout(r, 500));
+  // Wait for config to be written to IndexedDB
+  await new Promise(r => setTimeout(r, 2000));
 
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
   await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
