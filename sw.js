@@ -1,4 +1,5 @@
 importScripts("/assets/scramjet/scramjet.all.js");
+importScripts("/assets/baremux/index.js");
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
