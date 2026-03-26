@@ -37,7 +37,7 @@
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
   await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
 
-  await new Promise(r => setTimeout(r, 2000));
+  await new Promise(r => setTimeout(r, 500));
 
   const url = new URLSearchParams(location.search).get("url");
   if (url) {

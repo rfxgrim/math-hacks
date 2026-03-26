@@ -1,5 +1,4 @@
 importScripts("/assets/scramjet/scramjet.all.js");
-importScripts("/assets/baremux/index.js");
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
@@ -14,4 +13,10 @@ async function handleRequest(event) {
 
 self.addEventListener("fetch", (event) => {
   event.respondWith(handleRequest(event));
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "baremux") {
+    scramjet.setTransport(event.data.transport);
+  }
 });
