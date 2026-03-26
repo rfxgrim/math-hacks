@@ -22,15 +22,14 @@
     },
   });
 
-  scramjet.init();
-
+  await scramjet.init("/sw.js");
   await navigator.serviceWorker.register("/sw.js");
 
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
   const wispUrl = "wss://" + location.host + "/wisp/";
 
-  if ((await conn.getTransport()) !== "/assets/libcurl/index.mjs") {
-    await conn.setTransport("/assets/libcurl/index.mjs", [{ websocket: wispUrl }]);
+  if ((await conn.getTransport()) !== "/assets/epoxy/index.mjs") {
+    await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: wispUrl }]);
   }
 
   const url = new URLSearchParams(location.search).get("url");
