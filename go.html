@@ -9,9 +9,7 @@
       --accent: #3b82f6;
       --particle: rgba(255,255,255,.12);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body, html {
       width: 100%;
       height: 100%;
@@ -24,7 +22,6 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       color: #fff;
     }
-
     #sj-frame {
       position: fixed;
       inset: 0;
@@ -33,7 +30,6 @@
       border: none;
       display: none;
     }
-
     .loader {
       width: 72px;
       height: 72px;
@@ -45,7 +41,6 @@
       box-sizing: border-box;
       animation: rotation 1s linear infinite;
     }
-
     .loader::after, .loader::before {
       content: '';
       box-sizing: border-box;
@@ -60,24 +55,20 @@
       animation: rotationBack 0.5s linear infinite;
       transform-origin: center center;
     }
-
     .loader::before {
       width: 48px;
       height: 48px;
       border-color: #fff #fff transparent transparent;
       animation: rotation 1.5s linear infinite;
     }
-
     @keyframes rotation {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
     @keyframes rotationBack {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(-360deg); }
     }
-
     .loading-text {
       margin-top: 24px;
       font-size: 14px;
@@ -85,14 +76,12 @@
       color: rgba(255,255,255,0.5);
       letter-spacing: 0.05em;
     }
-
     .particles {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
     }
-
     .particle {
       position: absolute;
       bottom: -20px;
@@ -100,13 +89,11 @@
       background: var(--particle);
       animation: rise linear infinite;
     }
-
     @keyframes rise {
       from { transform: translateY(0); opacity: 0; }
       10% { opacity: 1; }
       to { transform: translateY(-120vh); opacity: 0; }
     }
-
     .loader-wrapper {
       position: relative;
       z-index: 1;
@@ -123,7 +110,6 @@
   <p class="loading-text">Loading Proxy...</p>
 </div>
 <iframe id="sj-frame"></iframe>
-
 <script src="/assets/baremux/index.js"></script>
 <script src="/assets/scramjet/scramjet.all.js"></script>
 <script>
@@ -151,10 +137,22 @@ for (let i = 0; i < 50; i++) {
   });
 
   await scramjet.init("/sw.js");
-  await navigator.serviceWorker.register("/sw.js");
+
+  const reg = await navigator.serviceWorker.register("/sw.js");
+
+  await new Promise(resolve => {
+    if (reg.active) return resolve();
+    const sw = reg.installing || reg.waiting;
+    if (!sw) return resolve();
+    sw.addEventListener("statechange", e => {
+      if (e.target.state === "activated") resolve();
+    });
+  });
 
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
-  await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://wisp.mercurywork.shop/" }]);
+  await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://" + location.host + "/wisp/" }]);
+
+  await new Promise(r => setTimeout(r, 3000));
 
   const url = new URLSearchParams(location.search).get("url");
   if (url) {
