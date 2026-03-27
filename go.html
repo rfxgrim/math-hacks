@@ -137,22 +137,15 @@ for (let i = 0; i < 50; i++) {
   });
 
   await scramjet.init("/sw.js");
-
-  const reg = await navigator.serviceWorker.register("/sw.js");
-
-  await new Promise(resolve => {
-    if (reg.active) return resolve();
-    const sw = reg.installing || reg.waiting;
-    if (!sw) return resolve();
-    sw.addEventListener("statechange", e => {
-      if (e.target.state === "activated") resolve();
-    });
-  });
+  await navigator.serviceWorker.register("/sw.js");
 
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
-  await conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://" + location.host + "/wisp/" }]);
 
-  await new Promise(r => setTimeout(r, 3000));
+  // Set transport with timeout so it doesn't hang forever
+  await Promise.race([
+    conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://" + location.host + "/wisp/" }]),
+    new Promise(r => setTimeout(r, 3000))
+  ]);
 
   const url = new URLSearchParams(location.search).get("url");
   if (url) {
