@@ -3,49 +3,18 @@ importScripts("/assets/scramjet/scramjet.all.js");
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
-scramjet.config = {
-  prefix: "/scramjet/",
-  globals: {
-    wrapfn: "$scramjet$wrap",
-    wrappropertybase: "$scramjet__",
-    wrappropertyfn: "$scramjet$prop",
-    cleanrestfn: "$scramjet$clean",
-    importfn: "$scramjet$import",
-    rewritefn: "$scramjet$rewrite",
-    metafn: "$scramjet$meta",
-    setrealmfn: "$scramjet$setrealm",
-    pushsourcemapfn: "$scramjet$pushsourcemap",
-    trysetfn: "$scramjet$tryset",
-    templocid: "$scramjet$temploc",
-    tempunusedid: "$scramjet$tempunused",
-  },
-  files: {
-    wasm: "/assets/scramjet/scramjet.wasm.wasm",
-    all: "/assets/scramjet/scramjet.all.js",
-    sync: "/assets/scramjet/scramjet.sync.js",
-  },
-  flags: {
-    serviceworkers: false,
-    syncxhr: false,
-    strictRewrites: true,
-    rewriterLogs: false,
-    captureErrors: true,
-    cleanErrors: false,
-    scramitize: false,
-    sourcemaps: true,
-    destructureRewrites: false,
-    interceptDownloads: false,
-    allowInvalidJs: true,
-    allowFailedIntercepts: true,
-  },
-  siteFlags: {},
-  codec: {
-    encode: "e=>e?encodeURIComponent(e):e",
-    decode: "e=>e?decodeURIComponent(e):e",
-  },
-};
+async function waitForConfig() {
+  for (let i = 0; i < 20; i++) {
+    await scramjet.loadConfig();
+    if (scramjet.config) return;
+    await new Promise(r => setTimeout(r, 300));
+  }
+}
 
 async function handleRequest(event) {
+  if (!scramjet.config) {
+    await waitForConfig();
+  }
   if (scramjet.route(event)) {
     return scramjet.fetch(event);
   }
