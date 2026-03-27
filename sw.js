@@ -3,7 +3,7 @@ importScripts("/assets/scramjet/scramjet.all.js");
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
-scramjet.config = {
+const CONFIG = {
   prefix: "/scramjet/",
   files: {
     wasm: "/assets/scramjet/scramjet.wasm.wasm",
@@ -31,6 +31,7 @@ scramjet.config = {
 };
 
 async function handleRequest(event) {
+  scramjet.config = CONFIG;
   if (scramjet.route(event)) {
     return scramjet.fetch(event);
   }
