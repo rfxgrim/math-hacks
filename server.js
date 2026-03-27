@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { server as wisp } from "@mercuryworkshop/wisp-js/server";
 import { createRequire } from "module";
+import fs from "fs";
 
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
@@ -15,6 +16,15 @@ const scramjetDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "sc
 const baremuxDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "bare-mux", "dist");
 const epoxyDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "epoxy-transport", "dist");
 const libcurlDir = path.join(__dirname, "node_modules", "@mercuryworkshop", "libcurl-transport", "dist");
+
+app.get("/debug-baremux", (req, res) => {
+  try {
+    const files = fs.readdirSync(baremuxDir);
+    res.json(files);
+  } catch(e) {
+    res.json({ error: e.message });
+  }
+});
 
 app.use("/assets/scramjet/", express.static(scramjetDir));
 app.use("/assets/baremux/", express.static(baremuxDir));
