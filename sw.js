@@ -3,8 +3,22 @@ importScripts("/assets/scramjet/scramjet.all.js");
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
-const CONFIG = {
+scramjet.config = {
   prefix: "/scramjet/",
+  globals: {
+    wrapfn: "$scramjet$wrap",
+    wrappropertybase: "$scramjet__",
+    wrappropertyfn: "$scramjet$prop",
+    cleanrestfn: "$scramjet$clean",
+    importfn: "$scramjet$import",
+    rewritefn: "$scramjet$rewrite",
+    metafn: "$scramjet$meta",
+    setrealmfn: "$scramjet$setrealm",
+    pushsourcemapfn: "$scramjet$pushsourcemap",
+    trysetfn: "$scramjet$tryset",
+    templocid: "$scramjet$temploc",
+    tempunusedid: "$scramjet$tempunused",
+  },
   files: {
     wasm: "/assets/scramjet/scramjet.wasm.wasm",
     all: "/assets/scramjet/scramjet.all.js",
@@ -24,6 +38,7 @@ const CONFIG = {
     allowInvalidJs: true,
     allowFailedIntercepts: true,
   },
+  siteFlags: {},
   codec: {
     encode: "e=>e?encodeURIComponent(e):e",
     decode: "e=>e?decodeURIComponent(e):e",
@@ -31,7 +46,6 @@ const CONFIG = {
 };
 
 async function handleRequest(event) {
-  scramjet.config = CONFIG;
   if (scramjet.route(event)) {
     return scramjet.fetch(event);
   }
