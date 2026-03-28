@@ -136,15 +136,14 @@ for (let i = 0; i < 50; i++) {
     },
   });
 
-  await scramjet.init("/sw.js");
-  await navigator.serviceWorker.register("/sw.js");
+  scramjet.init();
+  navigator.serviceWorker.register("/sw.js");
 
-  const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
+  const connection = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
+  connection.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://" + location.host + "/wisp/" }]);
 
-  await Promise.race([
-    conn.setTransport("/assets/epoxy/index.mjs", { wisp: "wss://" + location.host + "/wisp/" }),
-    new Promise(r => setTimeout(r, 3000))
-  ]);
+  // Wait for transport to be set
+  await new Promise(r => setTimeout(r, 2000));
 
   const url = new URLSearchParams(location.search).get("url");
   if (url) {
