@@ -4,7 +4,6 @@ const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
 self.addEventListener("fetch", (event) => {
-  if (!event.request.url.includes("/scramjet/")) return;
   event.respondWith(async () => {
     await scramjet.loadConfig();
     if (scramjet.route(event)) {
