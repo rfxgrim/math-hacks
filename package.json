@@ -8,7 +8,7 @@
   "dependencies": {
     "express": "^4.21.2",
     "@mercuryworkshop/scramjet": "https://github.com/MercuryWorkshop/scramjet/releases/download/latest/mercuryworkshop-scramjet-2.0.0-alpha.tgz",
-    "@mercuryworkshop/bare-mux": "2.0.0",
+    "@mercuryworkshop/bare-mux": "1",
     "@mercuryworkshop/epoxy-transport": "latest",
     "@mercuryworkshop/libcurl-transport": "latest",
     "@mercuryworkshop/wisp-js": "latest"
