@@ -141,9 +141,8 @@ for (let i = 0; i < 50; i++) {
 
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
 
-  // Set transport with timeout so it doesn't hang forever
   await Promise.race([
-    conn.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://" + location.host + "/wisp/" }]),
+    conn.setTransport("/assets/epoxy/index.mjs", ["wss://" + location.host + "/wisp/"]),
     new Promise(r => setTimeout(r, 3000))
   ]);
 
