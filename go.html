@@ -109,7 +109,6 @@
   <span class="loader"></span>
   <p class="loading-text">Loading Proxy...</p>
 </div>
-<iframe id="sj-frame"></iframe>
 <script src="/assets/baremux/index.js"></script>
 <script src="/assets/scramjet/scramjet.all.js"></script>
 <script>
@@ -137,20 +136,36 @@ for (let i = 0; i < 50; i++) {
   });
 
   scramjet.init();
-  navigator.serviceWorker.register("/sw.js");
+
+  const reg = await navigator.serviceWorker.register("/sw.js");
+
+  await new Promise(resolve => {
+    if (reg.active) return resolve();
+    const sw = reg.installing || reg.waiting;
+    if (!sw) return resolve();
+    sw.addEventListener("statechange", e => {
+      if (e.target.state === "activated") resolve();
+    });
+  });
 
   const connection = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
-  connection.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://" + location.host + "/wisp/" }]);
-
-  // Wait for transport to be set
-  await new Promise(r => setTimeout(r, 2000));
+  await Promise.race([
+    connection.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://" + location.host + "/wisp/" }]),
+    new Promise(r => setTimeout(r, 5000))
+  ]);
 
   const url = new URLSearchParams(location.search).get("url");
   if (url) {
     const frame = scramjet.createFrame();
     frame.frame.id = "sj-frame";
+    frame.frame.src = "about:blank";
     document.body.appendChild(frame.frame);
     frame.frame.style.display = "block";
+    frame.frame.style.position = "fixed";
+    frame.frame.style.inset = "0";
+    frame.frame.style.width = "100%";
+    frame.frame.style.height = "100%";
+    frame.frame.style.border = "none";
     document.getElementById("loaderWrapper").style.display = "none";
     frame.go(url);
   }

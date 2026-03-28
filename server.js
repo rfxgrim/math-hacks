@@ -34,6 +34,10 @@ app.use("/assets/libcurl/", express.static(libcurlDir));
 app.use(express.static(__dirname));
 
 app.get("*", (req, res) => {
+  if (req.url.startsWith("/scramjet/")) {
+    res.status(404).end();
+    return;
+  }
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
