@@ -142,7 +142,7 @@ for (let i = 0; i < 50; i++) {
   const conn = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
 
   await Promise.race([
-    conn.setTransport("/assets/epoxy/index.mjs", ["wss://" + location.host + "/wisp/"]),
+    conn.setTransport("/assets/epoxy/index.mjs", "wss://" + location.host + "/wisp/"),
     new Promise(r => setTimeout(r, 3000))
   ]);
 
