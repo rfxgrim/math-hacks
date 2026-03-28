@@ -150,7 +150,7 @@ for (let i = 0; i < 50; i++) {
 
   const connection = new BareMux.BareMuxConnection("/assets/baremux/worker.js");
   await Promise.race([
-    connection.setTransport("/assets/epoxy/index.mjs", [{ wisp: "wss://" + location.host + "/wisp/" }]),
+    connection.setTransport("/assets/libcurl/index.mjs", [{ websocket: "wss://" + location.host + "/wisp/" }]),
     new Promise(r => setTimeout(r, 5000))
   ]);
 
