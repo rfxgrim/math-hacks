@@ -22,14 +22,6 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       color: #fff;
     }
-    #sj-frame {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: none;
-    }
     .loader {
       width: 72px;
       height: 72px;
@@ -156,18 +148,7 @@ for (let i = 0; i < 50; i++) {
 
   const url = new URLSearchParams(location.search).get("url");
   if (url) {
-    const frame = scramjet.createFrame();
-    frame.frame.id = "sj-frame";
-    frame.frame.src = "about:blank";
-    document.body.appendChild(frame.frame);
-    frame.frame.style.display = "block";
-    frame.frame.style.position = "fixed";
-    frame.frame.style.inset = "0";
-    frame.frame.style.width = "100%";
-    frame.frame.style.height = "100%";
-    frame.frame.style.border = "none";
-    document.getElementById("loaderWrapper").style.display = "none";
-    frame.go(url);
+    location.href = scramjet.encodeUrl(url);
   }
 })();
 </script>
